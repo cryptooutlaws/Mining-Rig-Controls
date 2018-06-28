@@ -33,43 +33,6 @@ NVDS=nvidia-settings
  
 export DISPLAY=:0
 
-
-###Setup Headless mode###
-HEADLESS_MODE == "NO"
-XORG="FAIL"
-
-if [[ $HEADLESS_MODE == YES ]]
-then
-  if ! grep -q "XORG_UPDATED" ${NVOC}/xorg_flag;
-  then
-    sudo nvidia-xconfig -a --enable-all-gpus --allow-empty-initial-configuration --cool-bits=28
-    cd ${NVOC}
-    echo XORG_UPDATED > "${NVOC}/xorg_flag"
-    sleep 4
-    echo "XORG UPDATED"
-    echo ""
-    echo "Rebooting in 5"
-    echo ""
-    echo "disconnect monitor if connected"
-    sleep 5
-    sudo reboot
-  else
-    XORG="OK"
-  fi
-fi
-
-if grep -q "28800" /etc/X11/xorg.conf;
-then
-  XORG="OK"
-fi
-
-if [[ $XORG == FAIL ]]
-then
-  echo ""
-  echo "Xorg PROBLEM DETECTED"
-  echo ""
-fi
-
 if [[ $POWERLIMIT_MODE == GLOBAL ]]
 then
   sudo nvidia-smi -pl "$POWERLIMIT_WATTS"
